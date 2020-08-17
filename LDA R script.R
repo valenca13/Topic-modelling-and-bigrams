@@ -9,25 +9,26 @@ library(dplyr)
 library(SnowballC)
 library(textstem)
 
-####################################################################################
+#################################################################################################################################
 #IMPORTING DATASET
 
-#In this case it was considered ".txt" files. Other types of files should be imported differently
+#I considered importing ".txt" files. Other types of files should be imported differently.
 
-file.choose()
-setwd("G:/Meu Drive/Artigos para LDA/")
+#Select folder with the documents
+folder <- "G:\\Meu Drive\\...\\"
 
-folder <- "G:\\Meu Drive\\Artigos para LDA\\"
+#select only ".txt" documents from the selected folder.
+filelist <- list.files(folder, pattern = ".txt") 
 
-filelist <- list.files(folder, pattern = ".txt") #select only documents ".txt"
+#Join documents in an unique file
+filelist <- paste(folder, "\\", filelist, sep="")   
 
-filelist <- paste(folder, "\\", filelist, sep="") #Join documents.  
-
-x <- lapply(filelist, FUN = readLines) #Considers each line as a different element (document). 
+#Consider each line as a different element (document).
+x <- lapply(filelist, FUN = readLines)  
 
 docs <- lapply(x, FUN = paste, collapse = " ")
 
-###########################################################################################
+#################################################################################################################################
 #DATA CLEANING
 
 #Remove punctuation
@@ -42,8 +43,8 @@ text4 <- gsub(pattern = "\\b[A-z]\\b{1}", replace = " ", text3)
 text5 <- stripWhitespace(text4)
 #Lematize terms in its dictionary form
 text6 <- lemmatize_strings(text5, dictionary = lexicon::hash_lemmas)
-
-adicional_stopwords <- c("good","represent", "present", "different","london", "may","datum","taipei", "numb", "much", "one", "two", "can", "fig", "will", "arm", "along", "xpj", "figure", "thus","aviv", "tel", "dsc","dscs","traf","also","study", stopwords("en"))
+# Add adicional stopwords that were found by running the initial models. An example of terms that do not add value in academic journal papers is given.
+adicional_stopwords <- c("table", "figure","study", stopwords("en"))
 #remove stopwords
 text7 <- removeWords(text6, adicional_stopwords)
 
@@ -57,7 +58,7 @@ text_bigram <- removeWords(text7, new_stopwords)
 # Create corpus from vector
 corpus <- Corpus(VectorSource(text7))
 
-#################################################################################
+#################################################################################################################################
 #TOPIC MODELLING - LATENT DIRICHLET ALLOCATION (LDA)
 
 # Create document term matrix
@@ -107,8 +108,7 @@ ggplot(
   coord_flip() +
   labs(x = "term")
 
-##############################################################################
-
+#################################################################################################################################
 #BIAGRAMS
 
 library(quanteda)
