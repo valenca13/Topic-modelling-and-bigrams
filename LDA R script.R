@@ -36,8 +36,10 @@ text <- gsub(pattern = "\\W", replace = " ", docs)
 #Remove Numbers (digits)
 text2 <- gsub(pattern = "\\d", replace = " ", text)
 #Lowercase words
+## Note: This is an essential procedure, since the text mining models cannot differentiate the same word with uppercase and lowercase forms. 
+###E.g.: "Transport" and "transport" are considered two different words in the algorithm.  
 text3 <- tolower(text2)
-#remove single words 
+#remove single letter words 
 text4 <- gsub(pattern = "\\b[A-z]\\b{1}", replace = " ", text3) 
 #Remove whitespace
 text5 <- stripWhitespace(text4)
